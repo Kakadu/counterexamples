@@ -1,0 +1,66 @@
+name: Build master
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: sudo apt-get update --yes
+        if: false
+
+      - run: |
+          sudo apt-get --no-install-recommends install fonts-cmu texlive-lang-cyrillic texlive-xetex texlive-science texlive-plain-generic poppler-utils --yes
+        if: false
+
+      - run: make
+        #continue-on-error: true
+
+      - uses: ammaraskar/sphinx-action@7.0.0
+        if: false
+        with:
+          build-command: "sphinx-build -b html . _build"
+          docs-folder: "."
+
+      #- run: sudo apt install python3-sphinx-rtd-theme python3-sphinx-autobuild --yes
+      - if: false
+        run: |
+          python3 -m venv .
+          source bin/activate
+          make debs
+
+      - if: false
+        run: |
+          source bin/activate
+          make all #_build/comp_riscv.docx _build/Course_description.docx
+
+      - run: tree book
+        if: true
+
+      - name: Deploy documentation
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: Kakadu/kakadu.github.io
+          publish_branch: master
+          publish_dir: ./_build
+          destination_dir: counterexamples
+          enable_jekyll: true
+          keep_files: true
+          #commit_message: >
+          #  Deploying documentation for ${{ env.LANG_NAME }}: https://kakadu.github.io/${{ github.event.repository.name }}/docs/${{ env.LANG_NAME }} [skip ci]
+          user_name: "${{ github.event.repository.name }}[bot]"
+          user_email: "${{ github.event.repository.name }}[bot]@users.noreply.github.com"
+
