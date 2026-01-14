@@ -49,18 +49,25 @@ jobs:
       - run: tree book
         if: true
 
-      - name: Deploy documentation
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
-          personal_token: ${{ secrets.DEPLOY_TOKEN }}
-          external_repository: Kakadu/kakadu.github.io
-          publish_branch: master
-          publish_dir: ./_build
-          destination_dir: counterexamples
-          enable_jekyll: true
-          keep_files: true
-          #commit_message: >
-          #  Deploying documentation for ${{ env.LANG_NAME }}: https://kakadu.github.io/${{ github.event.repository.name }}/docs/${{ env.LANG_NAME }} [skip ci]
-          user_name: "${{ github.event.repository.name }}[bot]"
-          user_email: "${{ github.event.repository.name }}[bot]@users.noreply.github.com"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+
+      # - name: Deploy documentation
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     personal_token: ${{ secrets.DEPLOY_TOKEN }}
+      #     external_repository: Kakadu/kakadu.github.io
+      #     publish_branch: master
+      #     publish_dir: ./_build
+      #     destination_dir: counterexamples
+      #     enable_jekyll: true
+      #     keep_files: true
+      #     #commit_message: >
+      #     #  Deploying documentation for ${{ env.LANG_NAME }}: https://kakadu.github.io/${{ github.event.repository.name }}/docs/${{ env.LANG_NAME }} [skip ci]
+      #     user_name: "${{ github.event.repository.name }}[bot]"
+      #     user_email: "${{ github.event.repository.name }}[bot]@users.noreply.github.com"
 
